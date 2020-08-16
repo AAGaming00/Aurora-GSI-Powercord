@@ -1,5 +1,5 @@
+/* eslint-disable no-redeclare */
 /* eslint-disable no-var */
-/* eslint-disable no-empty-function */
 const { Plugin } = require('powercord/entities');
 const { getModule } = require('powercord/webpack');
 
