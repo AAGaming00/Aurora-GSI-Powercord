@@ -61,145 +61,28 @@ module.exports = class AuroraGSI extends Plugin {
   }
 
   startPlugin () {
-    const { getVoiceStates } = getModule([ 'getVoiceState' ], false),
-      { getUser } = getModule([ 'getUser' ], false),
-      { getChannel } = getModule([ 'getChannel' ], false),
-      { getCalls } = getModule([ 'getCalls' ], false),
-      getLanguage = document.documentElement.lang;
-
-    // this.jsonTimer = setInterval( this.sendJsonToAurora, 50, this.json );
-
-    switch (getLanguage) {
-      case 'en-US':
-        var mute = '[aria-label="Mute"]';
-        var deafen = '[aria-label="Deafen"]';
-        break;
-      case 'en-GB':
-        var mute = '[aria-label="Mute"]';
-        var deafen = '[aria-label="Deafen"]';
-        break;
-      case 'pl':
-        var mute = '[aria-label="Wycisz"]';
-        var deafen = '[aria-label="Wyłącz dźwięk"]';
-        break;
-      case 'da':
-        var mute = '[aria-label="Gør stum"]';
-        var deafen = '[aria-label="Gør døv"]';
-        break;
-      case 'de':
-        var mute = '[aria-label="Stummschalten"]';
-        var deafen = '[aria-label="Ein- und Ausgabe deaktivieren"]';
-        break;
-      case 'es-ES':
-        var mute = '[aria-label="Silenciar"]';
-        var deafen = '[aria-label="Ensordecer"]';
-        break;
-      case 'fr':
-        var mute = '[aria-label="Rendre muet"]';
-        var deafen = '[aria-label="Mettre en sourdine"]';
-        break;
-      case 'hr':
-        var mute = '[aria-label="Isključi mikrofon"]';
-        var deafen = '[aria-label="Isključi zvuk"]';
-        break;
-      case 'it':
-        var mute = '[aria-label="Silenzia"]';
-        var deafen = '[aria-label="Silenzia l\'audio"]';
-        break;
-      case 'lt':
-        var mute = '[aria-label="Nutildyti"]';
-        var deafen = '[aria-label="Išjungti garsą"]';
-        break;
-      case 'hu':
-        var mute = '[aria-label="Némítás"]';
-        var deafen = '[aria-label="Süketítés"]';
-        break;
-      case 'hl':
-        var mute = '[aria-label="Dempen"]';
-        var deafen = '[aria-label="Hoorbaar maken"]';
-        break;
-      case 'no':
-        var mute = '[aria-label="Demp"]';
-        var deafen = '[aria-label="Slå av lyd"]';
-        break;
-      case 'pt-BR':
-        var mute = '[aria-label="Desativar microfone"]';
-        var deafen = '[aria-label="Desativar áudio"]';
-        break;
-      case 'ro':
-        var mute = '[aria-label="Dezactivează microfonul"]';
-        var deafen = '[aria-label="Dezactivează sunetul"]';
-        break;
-      case 'fi':
-        var mute = '[aria-label="Mykistä"]';
-        var deafen = '[aria-label="Hiljennä"]';
-        break;
-      case 'sv-SE':
-        var mute = '[aria-label="Mikrofon av"]';
-        var deafen = '[aria-label="Ljud av"]';
-        break;
-      case 'vi':
-        var mute = '[aria-label="Tắt âm"]';
-        var deafen = '[aria-label="Tắt tiếng"]';
-        break;
-      case 'tr':
-        var mute = '[aria-label="Sustur"]';
-        var deafen = '[aria-label="Sağırlaştır"]';
-        break;
-      case 'cs':
-        var mute = '[aria-label="Ztlumit mikrofon"]';
-        var deafen = '[aria-label="Ztlumit zvuk"]';
-        break;
-      case 'el':
-        var mute = '[aria-label="Σίγαση"]';
-        var deafen = '[aria-label="Κώφωση"]';
-        break;
-      case 'bg':
-        var mute = '[aria-label="Изкл. на микрофона"]';
-        var deafen = '[aria-label="Заглушаване"]';
-        break;
-      case 'ru':
-        var mute = '[aria-label="Откл. микрофон"]';
-        var deafen = '[aria-label="Откл. звук"]';
-        break;
-      case 'uk':
-        var mute = '[aria-label="Вимкнути мікрофон"]';
-        var deafen = '[aria-label="Вимкнути звук"]';
-        break;
-      case 'th':
-        var mute = '[aria-label="ปิดเสียง"]';
-        var deafen = '[aria-label="ปิดการได้ยิน"]';
-        break;
-      case 'zh-CN':
-        var mute = '[aria-label="麦克风静音"]';
-        var deafen = '[aria-label="耳机静音"]';
-        break;
-      case 'ja':
-        var mute = '[aria-label="ミュート"]';
-        var deafen = '[aria-label="スピーカーミュート"]';
-        break;
-      case 'zh-TW':
-        var mute = '[aria-label="靜音"]';
-        var deafen = '[aria-label="拒聽"]';
-        break;
-      case 'ko':
-        var mute = '[aria-label="마이크 음소거 "]';
-        var deafen = '[aria-label="헤드셋 음소거 "]';
-        break;
-      default:
-        console.log('Something is borken... can\'t find language');
-    }
+    const { getUser } = getModule([ 'getUser' ], false),
+      { getCalls } = getModule([ 'getCalls' ], false);
+    this.mute = `[aria-label="${require('powercord/webpack').i18n.Messages.MUTE}"]`;
+    this.deafen = `[aria-label="${require('powercord/webpack').i18n.Messages.DEAFEN}"]`;
+    /*
+     * { getChannel } = getModule([ 'getChannel' ], false), // we dont use this yet
+     * const { getVoiceStates } = getModule([ 'getVoiceState' ], false),
+     */
     this.updatetimer = setInterval(() => {
+      // eslint-disable-next-line consistent-this
       var self = this;
 
-      var guild = this.getSelectedGuild();
-      var localUser = this.getLocalUser();
-      var localStatus = this.getLocalStatus();
-      var textChannel = this.getSelectedTextChannel();
-      var voiceChannel = this.getSelectedVoiceChannel();
-      if (voiceChannel) {
-        var voiceStates = getVoiceStates(voiceChannel.guild_id);
-      }
+      var guild = self.getSelectedGuild();
+      var localUser = self.getLocalUser();
+      var localStatus = self.getLocalStatus();
+      var textChannel = self.getSelectedTextChannel();
+      var voiceChannel = self.getSelectedVoiceChannel();
+      /*
+       * if (voiceChannel) {
+       *   var voiceStates = getVoiceStates(voiceChannel.guild_id);
+       * } not implemented
+       */
 
       if (localUser && localStatus) {
         self.json.user.id = localUser.id;
@@ -260,8 +143,8 @@ module.exports = class AuroraGSI extends Plugin {
         self.json.voice.name = '';
       }
 
-      self.json.user.self_mute = document.querySelector(mute).getAttribute('aria-checked');
-      self.json.user.self_deafen = document.querySelector(deafen).getAttribute('aria-checked');
+      self.json.user.self_mute = document.querySelector(self.mute).getAttribute('aria-checked');
+      self.json.user.self_deafen = document.querySelector(self.deafen).getAttribute('aria-checked');
 
       self.json.user.unread_messages = false;
       self.json.user.mentions = false;
@@ -292,7 +175,7 @@ module.exports = class AuroraGSI extends Plugin {
         'Content-Type': 'application/json'
       }
     })
-      .catch(error => undefined);
+      .catch(error => console.log(`Aurora GSI error: ${error}`));
   }
 
   pluginWillUnload () {
