@@ -1,0 +1,8 @@
+{
+    "name": "Aurora-GSI",
+    "version": "1.0.0",
+    "description": "A port of the BetterDiscord Aurora GSI plugin.",
+    "author": "AAGaming#9395",
+    "license": "MIT",
+    "repository": "https://github.com/ADoesGit/Aurora-GSI-Powercord"
+}
