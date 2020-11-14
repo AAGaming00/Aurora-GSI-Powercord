@@ -263,6 +263,7 @@ module.exports = class AuroraGSI {
         case 'MENTIONS_UPDATE':
           this.json.user.mentions = props.mentions > 0;
           this.json.user.mention_count = props.mentions;
+          break;
         case 'CALL_RING_UPDATE':
           this.json.user.being_called = props.being_called;
           break;
