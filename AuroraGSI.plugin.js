@@ -1,7 +1,75 @@
-const { Plugin } = require('powercord/entities');
-const { getModule, channels } = require('powercord/webpack');
+/**
+* @name Aurora-GSI
+* @description Sends information to Aurora about users connecting to/disconnecting from, mute/deafen status
+* @author Popato & DrMeteor
+* @version 2.2.0
+*/
 
-module.exports = class AuroraGSI extends Plugin {
+function getModule (props) {
+return BdApi.findModuleByProps.apply(null, props);
+}
+
+module.exports = class AuroraGSI {
+    getName () {
+        return 'AuroraGSI';
+    }
+
+    getDescription () {
+        return 'Sends information to Aurora about users connecting to/disconnecting from, mute/deafen status';
+    }
+
+    getVersion () {
+        return '2.2.0';
+    }
+
+    getAuthor () {
+        return 'Popato & DrMeteor';
+    }
+
+    getChanges () {
+        return {
+        '1.0.0' :
+                    `
+                        Initial version.
+                    `,
+        '1.0.1' :
+                    `
+                        Added conditions for only reacting to local user.
+                    `,
+        '1.0.2' :
+                    `
+                        Removed isBeingCalled.
+                        Removed redundant loop.
+                    `,
+        '1.0.3' :
+                    `
+                        Updated the CDN for the library.
+                    `,
+        '1.1' :
+                    `
+                        Made the state only be sent if it changed.
+                    `,
+        '2.0' :
+                    `
+                        Version bump to stop the update prompt derping.
+                    `,
+        '2.1.0':
+                    `
+                        Allow to track mute/deafen statuses outside voice channels.
+                        Fix unread status for Enhanced Discord users.
+                        Actually fix self-updating loop
+                    `,
+        '2.1.1':
+                    `
+                        Fix "being_called" boolean so it's now usable (triggers when user calls and getting called in DMs)
+                    `,
+        '2.2.0':
+                    `
+                        Rewrite a bunch of stuff
+                    `
+        };
+    }
+
   getSelectedGuild () {
     return this.getChannel(this.channels.getChannelId()).guild_id;
   }
@@ -18,7 +86,9 @@ module.exports = class AuroraGSI extends Plugin {
     return this.getStatus(this.getCurrentUser().id);
   }
 
-  startPlugin () {
+  load () {}// legacy
+
+start () {
     this.json = {
       provider: {
         name: 'discord',
@@ -53,7 +123,7 @@ module.exports = class AuroraGSI extends Plugin {
     this.getCurrentUser = getModule([ 'getUser', 'getUsers' ], false).getCurrentUser;
     this.getStatus = getModule([ 'getApplicationActivity' ], false).getStatus;
     this.getChannel = getModule([ 'getChannel' ], false).getChannel;
-    this.channels = channels;
+    this.channels = getModule([ 'getChannelId' ], false);
     const { getUser } = getModule([ 'getUser' ], false),
       voice = getModule([ 'isMute', 'isDeaf', 'isSelfMute', 'isSelfDeaf' ], false),
       { getCalls } = getModule([ 'getCalls' ], false),
@@ -174,7 +244,7 @@ module.exports = class AuroraGSI extends Plugin {
       .catch(error => console.log(`Aurora GSI error: ${error}`));
   }
 
-  pluginWillUnload () {
+  stop () {
     clearInterval(this.updatetimer);
     // this.unpatch();
     this.ready = false;

@@ -1,0 +1,11 @@
+{
+  "name": "Aurora-GSI-Powercord",
+  "version": "1.0.0",
+  "main": "pctobd.js",
+  "repository": "https://github.com/AAGaming00/Aurora-GSI-Powercord",
+  "author": "AAGaming00 <aa@bigdumb.gq>",
+  "license": "MIT",
+  "devDependencies": {
+    "outdent": "^0.7.1"
+  }
+}
