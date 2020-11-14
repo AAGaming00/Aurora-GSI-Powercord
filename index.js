@@ -3,7 +3,8 @@ const { getModule, channels } = require('powercord/webpack');
 
 module.exports = class AuroraGSI extends Plugin {
   getSelectedGuild () {
-    return this.getChannel(this.channels.getChannelId()).guild_id;
+    const channel = this.getChannel(this.channels.getChannelId())
+    return channel ? this.getGuild(channel.guild_id) : null;
   }
 
   getSelectedTextChannel () {
@@ -53,6 +54,7 @@ module.exports = class AuroraGSI extends Plugin {
     this.getCurrentUser = getModule([ 'getUser', 'getUsers' ], false).getCurrentUser;
     this.getStatus = getModule([ 'getApplicationActivity' ], false).getStatus;
     this.getChannel = getModule([ 'getChannel' ], false).getChannel;
+    this.getGuild = getModule([ 'getGuild' ], false).getGuild;
     this.channels = channels;
     const { getUser } = getModule([ 'getUser' ], false),
       voice = getModule([ 'isMute', 'isDeaf', 'isSelfMute', 'isSelfDeaf' ], false),
