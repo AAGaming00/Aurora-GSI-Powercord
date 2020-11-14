@@ -173,7 +173,6 @@ module.exports = class AuroraGSI {
        * const { getVoiceStates } = getModule([ 'getVoiceState' ], false),
        */
     this.handler = (props) => {
-      console.log(props);
       // eslint-disable-next-line consistent-this
       const localUser = this.getCurrentUser();
       const localStatus = this.getLocalStatus();
@@ -358,6 +357,6 @@ module.exports = class AuroraGSI {
         'Content-Type': 'application/json'
       }
     })
-      .catch(error => console.log(`Aurora GSI error: ${error}`));
+      .catch(error => console.warn(`Aurora GSI error: ${error}`));
   }
 };
