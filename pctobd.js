@@ -1,5 +1,4 @@
 const { readFile, writeFile } = require('fs').promises;
-const { fstat } = require('fs');
 const outdent = require('outdent');
 // small script to convert pc format to bd format.
 (async () => {
@@ -8,7 +7,7 @@ const outdent = require('outdent');
   // header
     .replace(outdent `
     const { Plugin } = require('powercord/entities');
-    const { getModule, channels } = require('powercord/webpack');`, outdent `
+    const { getModule, channels, FluxDispatcher } = require('powercord/webpack');`, outdent `
     //META{"name":"AuroraGSI","website":"http://www.project-aurora.com/","source":"https://github.com/Popat0/Discord-GSI/blob/master/AuroraGSI.plugin.js"}*//
 
     /*@cc_on
@@ -50,7 +49,7 @@ class AuroraGSI {
     }
 
     getVersion () {
-        return '2.2.0';
+        return '2.3.0';
     }
 
     getAuthor () {
@@ -97,19 +96,28 @@ class AuroraGSI {
         '2.2.0':
                     \`
                         Rewrite a bunch of stuff
+                    \`,
+        '2.3.0':
+                    \`
+                        Rewrite some more stuff
                     \`
         };
     }
 
           `)
+    .replace('constructor (props)', 'constructor ()')
+    .replace('super(props);\n    ', '')
   // function names
     .replace('pluginWillUnload', 'stop')
     .replace('startPlugin', `
   load () {}// legacy
 
   start`.trim())
+    .replace(/FluxDispatcher/g, 'this.FluxDispatcher')
   // channels
-    .replace('this.channels = channels;', 'this.channels = getModule([ \'getChannelId\' ], false);');
+    .replace('this.channels = channels;', outdent `
+    this.channels = getModule([ \'getChannelId\' ], false);
+        this.FluxDispatcher = getModule([ \'subscribe\', \'dispatch\' ], false);`);
 
 
   await writeFile('./AuroraGSI.plugin.js', bdfile);
