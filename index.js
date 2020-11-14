@@ -255,7 +255,7 @@ module.exports = class AuroraGSI extends Plugin {
   pluginWillUnload () {
     this.ready = false;
     clearInterval(this.interval);
-    FluxDispatcher.unsubscribe('MESSAGE_CREATE', this.detectMentionAndUnread);
+    FluxDispatcher.unsubscribe('MESSAGE_CREATE', this.detectMention);
     FluxDispatcher.unsubscribe('CHANNEL_SELECT', this.handler);
     FluxDispatcher.unsubscribe('VOICE_CHANNEL_SELECT', this.handler);
     FluxDispatcher.unsubscribe('PRESENCE_UPDATE', this.detectPresence);

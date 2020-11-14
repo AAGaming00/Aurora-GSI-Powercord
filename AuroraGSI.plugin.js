@@ -349,7 +349,7 @@ module.exports = class AuroraGSI {
   stop () {
     this.ready = false;
     clearInterval(this.interval);
-    this.FluxDispatcher.unsubscribe('MESSAGE_CREATE', this.detectMentionAndUnread);
+    this.FluxDispatcher.unsubscribe('MESSAGE_CREATE', this.detectMention);
     this.FluxDispatcher.unsubscribe('CHANNEL_SELECT', this.handler);
     this.FluxDispatcher.unsubscribe('VOICE_CHANNEL_SELECT', this.handler);
     this.FluxDispatcher.unsubscribe('PRESENCE_UPDATE', this.detectPresence);
