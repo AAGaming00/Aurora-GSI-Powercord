@@ -85,10 +85,10 @@ class AuroraGSI {
           `)
   // function names
     .replace('pluginWillUnload', 'stop')
-    .replace('startPlugin', outdent `
-    load () {}// legacy
-    
-    start`)
+    .replace('startPlugin', `
+  load () {}// legacy
+
+  start`.trim())
   // channels
     .replace('this.channels = channels;', 'this.channels = getModule([ \'getChannelId\' ], false);');
 

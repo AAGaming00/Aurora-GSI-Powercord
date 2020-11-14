@@ -88,7 +88,7 @@ module.exports = class AuroraGSI {
 
   load () {}// legacy
 
-start () {
+  start () {
     this.json = {
       provider: {
         name: 'discord',
