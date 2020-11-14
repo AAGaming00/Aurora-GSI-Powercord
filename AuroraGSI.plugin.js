@@ -257,14 +257,12 @@ module.exports = class AuroraGSI {
           break;
 
         case 'UNREADS_UPDATE':
-          const unreads = Object.values(getUnreadGuilds()).length;
-          const mentions = getTotalMentionCount();
-          this.json.user.unread_messages = unreads > 0;
-          this.json.user.mentions = mentions > 0;
-
-          this.json.user.mention_count = mentions;
-          this.json.user.unread_message_count = unreads;
+          this.json.user.unread_messages = props.unreads > 0;
+          this.json.user.unread_message_count = props.unreads;
           break;
+        case 'MENTIONS_UPDATE':
+          this.json.user.mentions = props.mentions > 0;
+          this.json.user.mention_count = props.mentions;
         case 'CALL_RING_UPDATE':
           this.json.user.being_called = props.being_called;
           break;
@@ -307,10 +305,10 @@ module.exports = class AuroraGSI {
     this.detectMention = (props) => {
       const uid = this.getCurrentUser().id;
       if (!props.message?.sendMessageOptions && props.message.author.id !== uid && props.message?.mentions?.filter(x => x.id === uid)[0]) {
-        this.handler({ type: 'MENTION',
-          ...props });
+        this.handler({ type: 'MENTIONS_UPDATE',
+          mentions: getTotalMentionCount });
       }
-      const unreads = getUnreadGuilds();
+      const unreads = Object.keys(getUnreadGuilds()).length;
       if (unreads !== this.unreads) {
         this.handler({ type: 'UNREADS_UPDATE',
           unreads });
