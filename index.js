@@ -211,9 +211,11 @@ module.exports = class AuroraGSI extends Plugin {
 
     this.detectMention = (props) => {
       const uid = this.getCurrentUser().id;
-      if (!props.message?.sendMessageOptions && props.message.author.id !== uid && props.message?.mentions?.filter(x => x.id === uid)[0]) {
+      const mentions = getTotalMentionCount();
+      if (!props.message?.sendMessageOptions && props.message.author.id !== uid && this.mentions !== mentions) {
         this.handler({ type: 'MENTIONS_UPDATE',
-          mentions: getTotalMentionCount });
+          mentions });
+        this.mentions = mentions;
       }
       const unreads = Object.keys(getUnreadGuilds()).length;
       if (unreads !== this.unreads) {
@@ -245,9 +247,15 @@ module.exports = class AuroraGSI extends Plugin {
     FluxDispatcher.subscribe('PRESENCE_UPDATE', this.detectPresence);
     FluxDispatcher.subscribe('CALL_CREATE', this.detectCall);
     this.voice = {};
-    this.unreads = {};
+    this.unreads = 0;
+    this.mentions = 0;
     this.interval = setInterval(timeoutEventHandlers, 100);
-    setTimeout(this.handler, 10000, { type: 'SETUP' });
+    const setupInterval = setInterval(() => {
+      if (this.getCurrentUser()?.id) {
+        clearInterval(setupInterval);
+        this.handler({ type: 'SETUP' });
+      }
+    }, 100);
   }
 
 
