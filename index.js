@@ -172,7 +172,7 @@ module.exports = class AuroraGSI extends Plugin {
           this.json.user.unread_message_count = unreads;
           break;
         case 'CALL_RING_UPDATE':
-          this.json.being_called = props.being_called;
+          this.json.user.being_called = props.being_called;
           break;
         case 'SETUP':
           this.json.user.id = this.getCurrentUser().id;
@@ -183,7 +183,6 @@ module.exports = class AuroraGSI extends Plugin {
           this.json.user.mention_count = getTotalMentionCount().length;
           this.json.user.unread_message_count = Object.values(getUnreadGuilds()).length;
           this.json.user.unread_messages = Object.values(getUnreadGuilds()).length > 0;
-          this.json.user.being_called = false;
           break;
         default:
           break;
@@ -209,35 +208,43 @@ module.exports = class AuroraGSI extends Plugin {
         this.voice.mute = voice.mute;
         this.voice.deafen = voice.deafen;
       }
-      const unreads = getUnreadGuilds();
-      if (unreads !== this.unreads) {
-        this.handler({ type: 'UNREADS_UPDATE',
-          unreads });
-        this.unreads = unreads;
-      }
-      const being_called = (getCalls().filter((x) => x.ringing.length > 0).length > 0);
-      if (being_called !== this.voice.being_called) {
-        this.handler({ type: 'CALL_RING_UPDATE',
-          being_called });
-        this.voice.being_called = being_called;
-      }
     };
+
     this.detectMention = (props) => {
       const uid = this.getCurrentUser().id;
       if (!props.message?.sendMessageOptions && props.message.author.id !== uid && props.message?.mentions?.filter(x => x.id === uid)[0]) {
         this.handler({ type: 'MENTION',
           ...props });
       }
+      const unreads = getUnreadGuilds();
+      if (unreads !== this.unreads) {
+        this.handler({ type: 'UNREADS_UPDATE',
+          unreads });
+        this.unreads = unreads;
+      }
     };
+
     this.detectPresence = (props) => {
       if (props.user.id === this.getCurrentUser().id) {
         this.handler(props);
       }
     };
+
+    this.detectCall = () => {
+      setImmediate(() => {
+        const being_called = (getCalls().filter((x) => x.ringing.length > 0).length > 0);
+        if (being_called !== this.voice.being_called) {
+          this.handler({ type: 'CALL_RING_UPDATE',
+            being_called });
+          this.voice.being_called = being_called;
+        }
+      });
+    };
     FluxDispatcher.subscribe('MESSAGE_CREATE', this.detectMention);
     FluxDispatcher.subscribe('CHANNEL_SELECT', this.handler);
     FluxDispatcher.subscribe('VOICE_CHANNEL_SELECT', this.handler);
     FluxDispatcher.subscribe('PRESENCE_UPDATE', this.detectPresence);
+    FluxDispatcher.subscribe('CALL_CREATE', this.detectCall);
     this.voice = {};
     this.unreads = {};
     this.interval = setInterval(timeoutEventHandlers, 100);
@@ -252,6 +259,7 @@ module.exports = class AuroraGSI extends Plugin {
     FluxDispatcher.unsubscribe('CHANNEL_SELECT', this.handler);
     FluxDispatcher.unsubscribe('VOICE_CHANNEL_SELECT', this.handler);
     FluxDispatcher.unsubscribe('PRESENCE_UPDATE', this.detectPresence);
+    FluxDispatcher.unsubscribe('CALL_CREATE', this.detectCall);
   }
 
   async sendJsonToAurora (json) {
