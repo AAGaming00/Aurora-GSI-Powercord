@@ -8,12 +8,8 @@ const outdent = require('outdent');
   // header
     .replace(outdent `
     const { Plugin } = require('powercord/entities');
-    const { getModule, channels } = require('powercord/webpack');`, outdent `/**
-    * @name Aurora-GSI
-    * @description Sends information to Aurora about users connecting to/disconnecting from, mute/deafen status
-    * @author Popato & DrMeteor
-    * @version 2.2.0
-    */
+    const { getModule, channels } = require('powercord/webpack');`, outdent `
+    //META{"name":"AuroraGSI"}*//
     
     function getModule (props) {
     return BdApi.findModuleByProps.apply(null, props);

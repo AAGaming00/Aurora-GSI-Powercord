@@ -1,9 +1,4 @@
-/**
-* @name Aurora-GSI
-* @description Sends information to Aurora about users connecting to/disconnecting from, mute/deafen status
-* @author Popato & DrMeteor
-* @version 2.2.0
-*/
+//META{"name":"AuroraGSI"}*//
 
 function getModule (props) {
 return BdApi.findModuleByProps.apply(null, props);
