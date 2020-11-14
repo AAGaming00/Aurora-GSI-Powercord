@@ -39,7 +39,7 @@ module.exports = class AuroraGSI extends Plugin {
         self_deafen : false,
         mentions: false,
         mention_count: 0,
-        unread_message_count: 0,
+        unread_guilds_count: 0,
         unread_messages: false,
         being_called: false
       },
@@ -164,7 +164,7 @@ module.exports = class AuroraGSI extends Plugin {
 
         case 'UNREADS_UPDATE':
           this.json.user.unread_messages = props.unreads > 0;
-          this.json.user.unread_message_count = props.unreads;
+          this.json.user.unread_guilds_count = props.unreads;
           break;
         case 'MENTIONS_UPDATE':
           this.json.user.mentions = props.mentions > 0;
@@ -180,7 +180,7 @@ module.exports = class AuroraGSI extends Plugin {
           this.json.user.self_deafen = isSelfDeaf();
           this.json.user.mentions = getTotalMentionCount().length > 0;
           this.json.user.mention_count = getTotalMentionCount().length;
-          this.json.user.unread_message_count = Object.values(getUnreadGuilds()).length;
+          this.json.user.unread_guilds_count = Object.values(getUnreadGuilds()).length;
           this.json.user.unread_messages = Object.values(getUnreadGuilds()).length > 0;
           break;
         default:
