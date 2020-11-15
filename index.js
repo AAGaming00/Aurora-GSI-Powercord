@@ -1,4 +1,3 @@
-/* eslint-disable no-case-declarations */
 const { Plugin } = require('powercord/entities');
 const { getModule, channels, FluxDispatcher } = require('powercord/webpack');
 

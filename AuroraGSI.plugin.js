@@ -1,4 +1,3 @@
-/* eslint-disable no-case-declarations */
 //META{"name":"AuroraGSI","website":"http://www.project-aurora.com/","source":"https://github.com/Popat0/Discord-GSI/blob/master/AuroraGSI.plugin.js"}*//
 
 /*@cc_on
