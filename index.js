@@ -202,17 +202,14 @@ module.exports = class AuroraGSI extends Plugin {
       if (this.voice.mute !== voice.mute || this.voice.deafen !== voice.deafen) {
         this.handler({ type: 'USER_VOICE_UPDATE',
           ...voice });
-        this.voice.self_mute = voice.self_mute;
-        this.voice.self_deafen = voice.self_deafen;
-        this.voice.mute = voice.mute;
-        this.voice.deafen = voice.deafen;
+        Object.assign(this.voice, voice);
       }
     };
 
     this.detectMention = (props) => {
       const uid = this.getCurrentUser().id;
       const mentions = getTotalMentionCount();
-      if (!props.message?.sendMessageOptions && props.message.author.id !== uid && this.mentions !== mentions) {
+      if (props.message && !props.message.sendMessageOptions && props.message.author.id !== uid && this.mentions !== mentions) {
         this.handler({ type: 'MENTIONS_UPDATE',
           mentions });
         this.mentions = mentions;
@@ -232,14 +229,14 @@ module.exports = class AuroraGSI extends Plugin {
     };
 
     this.detectCall = () => {
-      setImmediate(() => {
+      setTimeout(() => {
         const being_called = (getCalls().filter((x) => x.ringing.length > 0).length > 0);
         if (being_called !== this.voice.being_called) {
           this.handler({ type: 'CALL_RING_UPDATE',
             being_called });
           this.voice.being_called = being_called;
         }
-      });
+      }, 100);
     };
     FluxDispatcher.subscribe('MESSAGE_CREATE', this.detectMention);
     FluxDispatcher.subscribe('CHANNEL_SELECT', this.handler);
@@ -251,7 +248,7 @@ module.exports = class AuroraGSI extends Plugin {
     this.mentions = 0;
     this.interval = setInterval(timeoutEventHandlers, 100);
     const setupInterval = setInterval(() => {
-      if (this.getCurrentUser()?.id) {
+      if (this.getCurrentUser().id) {
         clearInterval(setupInterval);
         this.handler({ type: 'SETUP' });
       }
