@@ -247,7 +247,8 @@ module.exports = class AuroraGSI extends Plugin {
     this.mentions = 0;
     this.interval = setInterval(timeoutEventHandlers, 100);
     const setupInterval = setInterval(() => {
-      if (this.getCurrentUser().id) {
+      const u = this.getCurrentUser();
+      if (u.id) {
         clearInterval(setupInterval);
         this.handler({ type: 'SETUP' });
       }
