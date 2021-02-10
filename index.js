@@ -1,11 +1,12 @@
 const { Plugin } = require('powercord/entities');
 const { getModule, channels, FluxDispatcher } = require('powercord/webpack');
+const debounce = require('./debounce.js')
 
 
 module.exports = class AuroraGSI extends Plugin {
   constructor (props) {
     super(props);
-    this.sendJsonToAurora = global._.debounce(this.sendJsonToAurora, 100);
+    this.sendJsonToAurora = debounce(this.sendJsonToAurora, 100);
   }
 
   getSelectedGuild () {
