@@ -117,7 +117,9 @@ class AuroraGSI {
   // channels
     .replace('this.channels = channels;', outdent `
     this.channels = getModule([ \'getChannelId\' ], false);
-        this.FluxDispatcher = getModule([ \'subscribe\', \'dispatch\' ], false);`);
+        this.FluxDispatcher = getModule([ \'subscribe\', \'dispatch\' ], false);`)
+    .replace('const debounce = require(\'./debounce.js\')\n', '')
+    .replace('debounce', 'global._.debounce');
 
 
   await writeFile('./AuroraGSI.plugin.js', bdfile);

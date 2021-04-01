@@ -113,7 +113,7 @@ module.exports = class AuroraGSI {
   }
 
   getLocalStatus () {
-    return this.getStatus(this.getCurrentUser().id);
+    return this.getStatus(this.getCurrentUser()?.id);
   }
 
   load () {}// legacy
@@ -183,7 +183,7 @@ module.exports = class AuroraGSI {
       switch (props.type) {
         case 'PRESENCE_UPDATE':
           if (localUser && localStatus) {
-            this.json.user.id = localUser.id;
+            this.json.user.id = localUser?.id;
             this.json.user.status = localStatus;
           } else {
             this.json.user.id = -1;
@@ -267,7 +267,7 @@ module.exports = class AuroraGSI {
           this.json.user.being_called = props.being_called;
           break;
         case 'SETUP':
-          this.json.user.id = this.getCurrentUser().id;
+          this.json.user.id = this.getCurrentUser()?.id;
           this.json.user.status = this.getLocalStatus;
           this.json.user.self_mute = isSelfMute();
           this.json.user.self_deafen = isSelfDeaf();
@@ -300,7 +300,7 @@ module.exports = class AuroraGSI {
     };
 
     this.detectMention = (props) => {
-      const uid = this.getCurrentUser().id;
+      const uid = this.getCurrentUser()?.id;
       const mentions = getTotalMentionCount();
       if (props.message && !props.message.sendMessageOptions && props.message.author.id !== uid && this.mentions !== mentions) {
         this.handler({ type: 'MENTIONS_UPDATE',
@@ -316,7 +316,7 @@ module.exports = class AuroraGSI {
     };
 
     this.detectPresence = (props) => {
-      if (props.user.id === this.getCurrentUser().id) {
+      if (props.user.id === this.getCurrentUser()?.id) {
         this.handler(props);
       }
     };
