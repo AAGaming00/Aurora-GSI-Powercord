@@ -161,7 +161,7 @@ module.exports = class AuroraGSI {
     const { getUser } = getModule([ 'getUser' ], false),
       voice = getModule([ 'isMute', 'isDeaf', 'isSelfMute', 'isSelfDeaf' ], false),
       { getCalls } = getModule([ 'getCalls' ], false),
-      { getUnreadGuilds } = getModule([ 'getUnreadGuilds' ], false),
+      // { getUnreadGuilds } = getModule([ 'getUnreadGuilds' ], false),
       { getTotalMentionCount } = getModule([ 'getTotalMentionCount' ], false),
       isMute = voice.isMute.bind(voice),
       isDeaf = voice.isDeaf.bind(voice),
@@ -273,8 +273,8 @@ module.exports = class AuroraGSI {
           this.json.user.self_deafen = isSelfDeaf();
           this.json.user.mentions = getTotalMentionCount().length > 0;
           this.json.user.mention_count = getTotalMentionCount().length;
-          this.json.user.unread_guilds_count = Object.values(getUnreadGuilds()).length;
-          this.json.user.unread_messages = Object.values(getUnreadGuilds()).length > 0;
+          this.json.user.unread_guilds_count = 0 // Object.values(getUnreadGuilds()).length;
+          this.json.user.unread_messages = 0 // Object.values(getUnreadGuilds()).length > 0;
           break;
         default:
           break;
@@ -307,12 +307,12 @@ module.exports = class AuroraGSI {
           mentions });
         this.mentions = mentions;
       }
-      const unreads = Object.keys(getUnreadGuilds()).length;
-      if (unreads !== this.unreads) {
-        this.handler({ type: 'UNREADS_UPDATE',
-          unreads });
-        this.unreads = unreads;
-      }
+      // const unreads = Object.keys(getUnreadGuilds()).length;
+      // if (unreads !== this.unreads) {
+      //   this.handler({ type: 'UNREADS_UPDATE',
+      //     unreads });
+      //   this.unreads = unreads;
+      // }
     };
 
     this.detectPresence = (props) => {
