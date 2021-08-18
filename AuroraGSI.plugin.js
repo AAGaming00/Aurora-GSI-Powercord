@@ -91,6 +91,10 @@ module.exports = class AuroraGSI {
         '2.3.0':
                     `
                         Rewrite some more stuff
+                    `,
+        '2.4.0':
+                    `
+                        Rewrite some more stuff
                     `
         };
     }
@@ -161,7 +165,7 @@ module.exports = class AuroraGSI {
     const { getUser } = getModule([ 'getUser' ], false),
       voice = getModule([ 'isMute', 'isDeaf', 'isSelfMute', 'isSelfDeaf' ], false),
       { getCalls } = getModule([ 'getCalls' ], false),
-      { getUnreadGuilds } = getModule([ 'getUnreadGuilds' ], false),
+      { getMutableGuildStates: getUnreadGuilds } = getModule([ 'getMutableGuildStates' ], false),
       { getTotalMentionCount } = getModule([ 'getTotalMentionCount' ], false),
       isMute = voice.isMute.bind(voice),
       isDeaf = voice.isDeaf.bind(voice),
@@ -273,8 +277,8 @@ module.exports = class AuroraGSI {
           this.json.user.self_deafen = isSelfDeaf();
           this.json.user.mentions = getTotalMentionCount().length > 0;
           this.json.user.mention_count = getTotalMentionCount().length;
-          this.json.user.unread_guilds_count = Object.values(getUnreadGuilds()).length;
-          this.json.user.unread_messages = Object.values(getUnreadGuilds()).length > 0;
+          this.json.user.unread_guilds_count = Object.values(getUnreadGuilds()).filter(obj => Object.values(obj).includes(true)).length;
+          this.json.user.unread_messages = Object.values(getUnreadGuilds()).filter(obj => Object.values(obj).includes(true)).length > 0;
           break;
         default:
           break;
@@ -307,7 +311,7 @@ module.exports = class AuroraGSI {
           mentions });
         this.mentions = mentions;
       }
-      const unreads = Object.keys(getUnreadGuilds()).length;
+      const unreads = Object.values(getUnreadGuilds()).filter(obj => Object.values(obj).includes(true)).length;
       if (unreads !== this.unreads) {
         this.handler({ type: 'UNREADS_UPDATE',
           unreads });
